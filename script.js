@@ -12,10 +12,11 @@
         o botão apenas rola a página até a seção de planos.
      ------------------------------------------------------------ */
   var LINKS = {
-    basico:  '',   // ex.: 'https://pay.kirvano.com/xxxx'
-    premium: '',   // ex.: 'https://pay.kirvano.com/yyyy'
-    suporte: '',   // ex.: 'https://wa.me/5511999999999'
-    contato: ''    // ex.: 'https://wa.me/5511999999999'
+    basico:   'https://ggcheckout.app/checkout/v3/huthToL3Cq8DED9qY65l',  // R$ 10,90
+    premium:  'https://ggcheckout.app/checkout/v3/5kSkMNamu0gnaeUPM1Tt',  // R$ 19,90
+    completo: 'https://ggcheckout.app/checkout/v3/0v6mqAh4Uh4mmNq9lVmW',  // R$ 49,90
+    suporte:  'https://wa.me/5547984641097',
+    contato:  'https://wa.me/5547984641097'
   };
 
   // Abre em nova aba? (recomendado para checkout externo)
@@ -30,6 +31,71 @@
       el.setAttribute('rel', 'noopener');
     }
   });
+
+  /* ------------------------------------------------------------
+     1b) UPSELL — clicar no Básico abre o comparativo com o Premium
+         antes de mandar a pessoa para o checkout. Os links de dentro
+         do próprio modal seguem direto, sem reabrir nada.
+     ------------------------------------------------------------ */
+  var modal = document.getElementById('upsell');
+
+  if (modal) {
+    var focoAnterior = null;
+
+    var fecharModal = function () {
+      modal.hidden = true;
+      document.body.classList.remove('has-modal');
+      if (focoAnterior) focoAnterior.focus();
+      focoAnterior = null;
+    };
+
+    var abrirModal = function (gatilho) {
+      focoAnterior = gatilho || null;
+      modal.hidden = false;
+      document.body.classList.add('has-modal');
+      var alvo = modal.querySelector('.btn');
+      if (alvo) alvo.focus();
+    };
+
+    document.querySelectorAll('[data-link="basico"]').forEach(function (el) {
+      if (modal.contains(el)) return;          // o "quero só o básico" segue direto
+      el.addEventListener('click', function (e) {
+        e.preventDefault();
+        abrirModal(el);
+      });
+    });
+
+    modal.querySelectorAll('[data-upsell-close]').forEach(function (el) {
+      el.addEventListener('click', fecharModal);
+    });
+
+    // Sair pelo Esc e manter o Tab preso dentro do modal
+    document.addEventListener('keydown', function (e) {
+      if (modal.hidden) return;
+
+      if (e.key === 'Escape') { fecharModal(); return; }
+      if (e.key !== 'Tab') return;
+
+      var focaveis = modal.querySelectorAll('a[href], button');
+      if (!focaveis.length) return;
+
+      var primeiro = focaveis[0];
+      var ultimo = focaveis[focaveis.length - 1];
+
+      if (e.shiftKey && document.activeElement === primeiro) {
+        e.preventDefault();
+        ultimo.focus();
+      } else if (!e.shiftKey && document.activeElement === ultimo) {
+        e.preventDefault();
+        primeiro.focus();
+      }
+    });
+
+    // Escolheu um dos dois: fecha para a página não voltar com o modal aberto
+    modal.querySelectorAll('[data-link]').forEach(function (el) {
+      el.addEventListener('click', fecharModal);
+    });
+  }
 
   var reduzirMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 

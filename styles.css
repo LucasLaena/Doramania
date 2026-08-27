@@ -180,6 +180,13 @@ a{ color: inherit; text-decoration: none; }
 }
 .btn--light:hover{ color: var(--rose-2); }
 
+.btn--gold{
+  color: #40200A;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-2) 100%);
+  box-shadow: 0 16px 34px -12px rgba(233,161,59,.6);
+}
+.btn--gold:hover{ box-shadow: 0 20px 42px -12px rgba(233,161,59,.78); }
+
 .btn--sm{ min-height: 48px; padding: 12px 20px; font-size: 14px; }
 .btn--block{ display: flex; width: 100%; }
 .btn--xl{ min-height: 60px; padding: 18px 40px; font-size: 17px; }
@@ -459,13 +466,16 @@ svg{ width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 
 }
 
 .plan{
+  --plan-pad: 26px;
   position: relative;
-  padding: 30px 26px;
+  padding: 30px var(--plan-pad);
   border-radius: var(--r);
 }
 
+/* No mobile a ordem é Premium > Completo > Básico: o plano que converte
+   aparece primeiro e o Básico fica por último, como âncora de preço. */
 .plan--basic{
-  order: 2;                       /* no mobile o Premium vem primeiro */
+  order: 3;
   border: 1px solid var(--line-2);
   background: linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.02));
 }
@@ -474,6 +484,13 @@ svg{ width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 
   color: #fff;
   background: linear-gradient(158deg, #FF2E6E 0%, var(--rose-2) 46%, var(--rose-3) 100%);
   box-shadow: 0 34px 70px -28px rgba(255,61,119,.65);
+  padding-top: 40px;
+}
+.plan--full{
+  order: 2;
+  border: 1px solid rgba(255,201,120,.42);
+  background: linear-gradient(168deg, var(--plum) 0%, var(--ink-2) 100%);
+  box-shadow: 0 30px 64px -30px rgba(255,201,120,.4);
   padding-top: 40px;
 }
 
@@ -492,6 +509,11 @@ svg{ width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 
   text-transform: uppercase;
   white-space: nowrap;
   box-shadow: 0 10px 24px -10px rgba(0,0,0,.7);
+}
+
+.plan__ribbon--rose{
+  background: linear-gradient(135deg, var(--rose) 0%, var(--rose-2) 100%);
+  color: #fff;
 }
 
 .plan__name{ font-size: clamp(21px, 4vw, 26px); font-weight: 700; }
@@ -520,6 +542,28 @@ svg{ width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 
   color: var(--gold);
 }
 .plan__note{ margin-top: 6px; font-size: 12.5px; color: var(--muted); }
+
+/* O prazo do Básico fica explícito — é ele que justifica o upsell */
+.plan__limit{
+  display: inline-block;
+  margin-top: 15px;
+  padding: 6px 13px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,107,132,.42);
+  background: rgba(255,107,132,.12);
+  color: var(--no);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.feats__lead{
+  margin-top: 24px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
 .plan--premium .plan__note{ color: rgba(255,255,255,.78); }
 
 .plan__was{
@@ -550,6 +594,8 @@ svg{ width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 
 }
 .feat--off{ color: var(--muted-2); }
 .feats--premium .feat{ font-weight: 700; }
+.feats--full{ margin-top: 13px; }
+.feats--full .feat{ font-weight: 700; }
 
 .ico{
   flex: 0 0 auto;
@@ -570,10 +616,14 @@ svg{ width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFC978'%3E%3Cpath d='M12 21s-7.4-4.6-9.5-9A5.2 5.2 0 0 1 12 6.4 5.2 5.2 0 0 1 21.5 12c-2.1 4.4-9.5 9-9.5 9Z'/%3E%3C/svg%3E");
 }
 
+.ico--star{
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFC978'%3E%3Cpath d='M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4 6.2 20.5l1.1-6.5L2.6 9.4l6.5-.9L12 2.6Z'/%3E%3C/svg%3E");
+}
+
 /* Picote do "passe vitalício" */
 .ticket-cut{
   height: 0;
-  margin: 26px -26px 24px;
+  margin: 26px calc(-1 * var(--plan-pad)) 24px;
   border-top: 2px dashed rgba(255,255,255,.38);
 }
 
@@ -726,6 +776,157 @@ svg{ width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 
 .sticky-cta__info span{ font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--gold); }
 .sticky-cta .btn{ flex: 0 0 auto; }
 
+/* Botão flutuante do WhatsApp — acompanha a barra fixa no mobile */
+.wa-float{
+  position: fixed;
+  right: 16px;
+  bottom: calc(90px + env(safe-area-inset-bottom));
+  z-index: 55;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #25D366;
+  color: #fff;
+  box-shadow: 0 14px 30px -8px rgba(37,211,102,.6);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.wa-float svg{ width: 32px; height: 32px; fill: currentColor; stroke: none; }
+.wa-float:hover{
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 18px 38px -8px rgba(37,211,102,.75);
+}
+/* Anel pulsando, só para o olho cair no botão */
+.wa-float::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(37,211,102,.55);
+  animation: waPulse 2.4s ease-out infinite;
+}
+@keyframes waPulse{
+  0%   { transform: scale(1);    opacity: .8; }
+  70%  { transform: scale(1.45); opacity: 0; }
+  100% { transform: scale(1.45); opacity: 0; }
+}
+
+/* Upsell — comparativo que abre antes do checkout do Básico */
+.upsell{
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+}
+.upsell[hidden]{ display: none; }
+
+.upsell__backdrop{
+  position: absolute;
+  inset: 0;
+  background: rgba(8,2,14,.8);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.upsell__box{
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  max-height: calc(100dvh - 36px);
+  overflow-y: auto;
+  padding: 30px 24px 24px;
+  border-radius: var(--r);
+  border: 1px solid rgba(255,201,120,.34);
+  background: linear-gradient(170deg, var(--ink-3) 0%, var(--ink) 100%);
+  box-shadow: 0 40px 90px -30px rgba(0,0,0,.92);
+  text-align: center;
+  animation: upsellIn .26s ease-out;
+}
+@keyframes upsellIn{
+  from{ opacity: 0; transform: translateY(14px) scale(.97); }
+  to  { opacity: 1; transform: none; }
+}
+
+.upsell__x{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,.07);
+  color: var(--muted);
+  cursor: pointer;
+}
+.upsell__x:hover{ background: rgba(255,255,255,.14); color: var(--cream); }
+.upsell__x svg{ width: 17px; height: 17px; stroke-width: 2.4; }
+
+.upsell__eyebrow{
+  display: inline-block;
+  padding: 6px 15px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-2));
+  color: #40200A;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.upsell__title{
+  margin-top: 16px;
+  font-family: var(--font-display);
+  font-size: clamp(24px, 6vw, 30px);
+  font-weight: 800;
+  line-height: 1.14;
+  letter-spacing: -.02em;
+}
+.upsell__title em{ font-style: normal; color: var(--rose-soft); }
+.upsell__sub{
+  margin-top: 12px;
+  font-size: 14.5px;
+  color: var(--muted);
+}
+.upsell__sub b{ color: var(--cream); }
+
+.upsell__list{
+  display: grid;
+  gap: 12px;
+  margin: 22px 0 24px;
+  text-align: left;
+}
+.upsell__list li{
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.upsell__keep{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 14px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--muted-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.upsell__keep:hover{ color: var(--muted); }
+
+/* Trava a rolagem do fundo enquanto o modal está aberto */
+body.has-modal{ overflow: hidden; }
+
 /* ---------- 5) RESPONSIVO ------------------------------------ */
 
 /* Tablet */
@@ -739,21 +940,35 @@ svg{ width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 
 @media (min-width: 900px){
   :root{ --gut: 32px; }
 
-  .plans{ grid-template-columns: 1fr 1.06fr; gap: 26px; }
-  .plan--basic{ order: 1; }
-  .plan--premium{ order: 2; transform: translateY(-10px); padding: 44px 32px 32px; }
-  .plan{ padding: 34px 32px; }
-  .ticket-cut{ margin-inline: -32px; }
-
   .hero__title{ max-width: 22ch; }
 
   .sticky-cta{ display: none; }
+
+  /* Sem a barra fixa embaixo, o WhatsApp desce para o canto */
+  .wa-float{ right: 24px; bottom: 24px; }
+}
+
+/* Três colunas — abaixo disso os cards ficariam estreitos demais.
+   Ordem no desktop: Básico > Premium (destaque) > Completo. */
+@media (min-width: 1000px){
+  .plans{ grid-template-columns: 1fr 1.08fr 1fr; gap: 20px; }
+  .plan{ --plan-pad: 24px; padding: 32px var(--plan-pad); }
+  .plan--basic{ order: 1; }
+  .plan--premium{ order: 2; transform: translateY(-10px); padding: 42px var(--plan-pad) 30px; }
+  .plan--full{ order: 3; padding-top: 42px; }
+}
+
+@media (min-width: 1120px){
+  .plans{ gap: 24px; }
+  .plan{ --plan-pad: 30px; }
+}
+
+@media (max-width: 999px){
+  /* Em coluna única os cards não devem esticar até a largura toda */
+  .plan{ width: 100%; max-width: 560px; margin-inline: auto; }
 }
 
 @media (max-width: 899px){
-  /* Em coluna única os cards não devem esticar até a largura toda */
-  .plan{ width: 100%; max-width: 560px; margin-inline: auto; }
-
   /* Espaço extra no fim da página para a barra fixa não cobrir o rodapé */
   body.has-sticky{ padding-bottom: 78px; }
 }
@@ -766,4 +981,5 @@ svg{ width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 
     transition-duration: .001ms !important;
   }
   .js [data-reveal]{ opacity: 1; transform: none; }
+  .wa-float::before{ display: none; }
 }
