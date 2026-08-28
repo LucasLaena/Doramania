@@ -12,3 +12,9 @@ Desktop.ini
 # Temporários
 *.log
 *.tmp
+
+# Acervo local — originais pesados que ficam salvos na pasta mas não
+# vão para o repositório, porque o site não usa nenhum deles.
+imagens/feedback doramania/
+imagens/catalago 2/
+imagens/dorama-*.webp
